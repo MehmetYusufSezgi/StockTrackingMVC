@@ -265,3 +265,5 @@ C:\Users\msezg\OneDrive\Masaüstü\MVC\StockTrackingMVC\StockTrackingMVC\bin\Deb
 C:\Users\msezg\OneDrive\Masaüstü\MVC\StockTrackingMVC\StockTrackingMVC\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 C:\Users\msezg\OneDrive\Masaüstü\MVC\StockTrackingMVC\StockTrackingMVC\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\msezg\OneDrive\Masaüstü\MVC\StockTrackingMVC\StockTrackingMVC\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\msezg\OneDrive\Masaüstü\MVC\StockTrackingMVC\StockTrackingMVC\obj\Debug\net6.0\scopedcss\Views\Shared\_LayoutAdmin.cshtml.rz.scp.css
+C:\Users\msezg\OneDrive\Masaüstü\MVC\StockTrackingMVC\StockTrackingMVC\obj\Debug\net6.0\scopedcss\Views\Shared\_LayoutKullanici.cshtml.rz.scp.css

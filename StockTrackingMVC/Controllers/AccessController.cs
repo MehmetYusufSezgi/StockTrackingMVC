@@ -4,11 +4,17 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using StockTrackingMVC.Models;
 using System.Threading.Tasks;
+using StockTrackingMVC.Data;
 
 namespace StockTrackingMVC.Controllers
 {
     public class AccessController : Controller
     {
+        private readonly StockTrackingDBContext _dbContext;
+        public AccessController(StockTrackingDBContext dBContext)
+        {
+            _dbContext = dBContext;
+        }
         public IActionResult Login()
         {
             ClaimsPrincipal claimUser = HttpContext.User;

@@ -27,7 +27,7 @@
 							<option disabled value="">Select a category...</option>
 							@foreach (var category in ViewBag.Categories)
 							{
-								<option value="@category.Id">@category.CategoryName</option>
+								<option value="@category.Id"> <p style="color:blue">@category.CategoryName</p></option>
 							}
 						</select>
 					</div>
