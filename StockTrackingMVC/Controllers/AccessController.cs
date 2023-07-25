@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using StockTrackingMVC.Models;
 using System.Threading.Tasks;
 using StockTrackingMVC.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace StockTrackingMVC.Controllers
 {
@@ -27,12 +28,15 @@ namespace StockTrackingMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(User modelLogin)
         {
-            if(modelLogin.UserName == "Mehmet Yusuf SEZGİ" && modelLogin.UserPassword == "4412")
+			User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == modelLogin.UserName);
+
+			if (user != null && user.UserPassword == modelLogin.UserPassword)
             {
                 List<Claim> claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, modelLogin.UserName),
-                    new Claim("OtherProperties", "Example Role")
+					new Claim(ClaimTypes.Role, user.UserType),
+					new Claim("OtherProperties", "Example Role")
                 };
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
                     CookieAuthenticationDefaults.AuthenticationScheme);
