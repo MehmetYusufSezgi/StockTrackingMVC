@@ -1,6 +1,7 @@
 ﻿@model Product
 
-<form method="post" asp-action="Edit">
+<form method="post" asp-action="Edit" >
+
 	<div class="border p-3 mt-4">
 		<div class="row pb-2">
 			<h2 class="text-light">Ürün Düzenle</h2>
@@ -30,6 +31,7 @@
 								<option value="@category.Id"> <p style="color:blue">@category.CategoryName</p></option>
 							}
 						</select>
+						
 					</div>
 				</div>
 			</div>

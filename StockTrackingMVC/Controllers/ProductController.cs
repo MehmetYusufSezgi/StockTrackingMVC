@@ -32,10 +32,18 @@ namespace StockTrackingMVC.Controllers
             if (ModelState.IsValid)
             {
                 _dbcontext.Products.Add(obj);
-                _dbcontext.SaveChanges();
-                TempData["success"] = "Ürün başarıyla eklendi";
-                return RedirectToAction("Index");
-            }
+                var message = User.Identity.Name + " ürün ekledi : " + obj.ProductName;
+                var logEntry = new Log
+                {
+                    LogUser = User.Identity.Name,
+                    LogMessage = message,
+                    LogTime = DateTime.Now
+                };
+                _dbcontext.Logs.Add(logEntry);
+				TempData["success"] = "Ürün başarıyla eklendi";
+				_dbcontext.SaveChanges();
+				return RedirectToAction("Index");
+			}
 			ViewBag.Categories = _dbcontext.Categories.ToList();
 			return View(obj);
         }
@@ -64,16 +72,27 @@ namespace StockTrackingMVC.Controllers
 			if (ModelState.IsValid)
 			{
 				_dbcontext.Products.Update(obj);
+				var message = User.Identity.Name + " ürün güncelledi : " + obj.ProductName;
+				var logEntry = new Log
+				{
+					LogUser = User.Identity.Name,
+					LogMessage = message,
+					LogTime = DateTime.Now
+				};
+				_dbcontext.Logs.Add(logEntry);
 				_dbcontext.SaveChanges();
-                TempData["success"] = "Ürün başarıyla güncellendi";
-                return RedirectToAction("Index");
+				TempData["success"] = "Ürün başarıyla güncellendi";
+				return RedirectToAction("Index");
 			}
+            var value=  ModelState.Values.SelectMany(v => v.Errors);
+			// If the ModelState is not valid, return the Edit view with the model data
 			ViewBag.Categories = _dbcontext.Categories.ToList();
-			return View(obj);
+			return View("Edit", obj);
 		}
 
-        //GET
-        public IActionResult Delete(int? id)
+
+		//GET
+		public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
             {
@@ -99,7 +118,15 @@ namespace StockTrackingMVC.Controllers
                 return NotFound();
             }
             _dbcontext.Products.Remove(productFromDb);
-            _dbcontext.SaveChanges();
+			var message = User.Identity.Name + " ürün sildi : " + productFromDb.ProductName;
+			var logEntry = new Log
+			{
+				LogUser = User.Identity.Name,
+				LogMessage = message,
+				LogTime = DateTime.Now
+			};
+			_dbcontext.Logs.Add(logEntry);
+			_dbcontext.SaveChanges();
 			ViewBag.Categories = _dbcontext.Categories.ToList();
 			TempData["success"] = "Ürün başarıyla silindi";
 			return RedirectToAction("Index");
@@ -117,6 +144,14 @@ namespace StockTrackingMVC.Controllers
 			if (productFromDb.ProductAmount > 0)
 			{
 				productFromDb.ProductAmount--;
+				var message = User.Identity.Name + " ürün sattı : " + productFromDb.ProductName;
+				var logEntry = new Log
+				{
+					LogUser = User.Identity.Name,
+					LogMessage = message,
+					LogTime = DateTime.Now
+				};
+				_dbcontext.Logs.Add(logEntry);
 				_dbcontext.SaveChanges();
 			}
             TempData["success"] = "Ürün başarıyla satıldı";

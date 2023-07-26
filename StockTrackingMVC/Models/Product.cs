@@ -24,6 +24,6 @@ namespace StockTrackingMVC.Models
         [DisplayName("Satış Fiyatı")]
         [Required]
         public int ProductSellingPrice { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
     }
 }

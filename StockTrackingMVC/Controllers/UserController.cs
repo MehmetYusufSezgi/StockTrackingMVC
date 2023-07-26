@@ -31,11 +31,20 @@ namespace StockTrackingMVC.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				// Get the selected UserType value from the dropdown
+				// Select aracı için kullanıcı tipi
 				string selectedUserType = Request.Form["UserType"];
 
-				// Update the UserType property of the object with the selected value
+				// Kullanıcı tipi atama
 				obj.UserType = selectedUserType;
+
+				var message = User.Identity.Name + " kullanıcı ekledi : " + obj.UserName + ", tür : " + obj.UserType;
+				var logEntry = new Log
+				{
+					LogUser = User.Identity.Name,
+					LogMessage = message,
+					LogTime = DateTime.Now
+				};
+				_dbcontext.Logs.Add(logEntry);
 
 				_dbcontext.Users.Add(obj);
 				_dbcontext.SaveChanges();
@@ -71,11 +80,20 @@ namespace StockTrackingMVC.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				// Get the selected UserType value from the dropdown
+				// Select aracı için kullanıcı tipi
 				string selectedUserType = Request.Form["UserType"];
 
-				// Update the UserType property of the object with the selected value
+				// Kullanıcı tipi atama
 				obj.UserType = selectedUserType;
+
+				var message = User.Identity.Name + " kullanıcı güncelledi : " + obj.UserName + ", tür : " + obj.UserType;
+				var logEntry = new Log
+				{
+					LogUser = User.Identity.Name,
+					LogMessage = message,
+					LogTime = DateTime.Now
+				};
+				_dbcontext.Logs.Add(logEntry);
 
 				_dbcontext.Users.Update(obj);
 				_dbcontext.SaveChanges();
@@ -113,6 +131,14 @@ namespace StockTrackingMVC.Controllers
 			{
 				return NotFound();
 			}
+			var message = User.Identity.Name + " kullanıcı sildi : " + userFromDb.UserName + ", tür : " + userFromDb.UserType;
+			var logEntry = new Log
+			{
+				LogUser = User.Identity.Name,
+				LogMessage = message,
+				LogTime = DateTime.Now
+			};
+			_dbcontext.Logs.Add(logEntry);
 			_dbcontext.Users.Remove(userFromDb);
 			_dbcontext.SaveChanges();
 			ViewBag.Users = _dbcontext.Users.ToList();

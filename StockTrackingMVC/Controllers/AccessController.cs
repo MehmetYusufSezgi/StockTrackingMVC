@@ -35,18 +35,29 @@ namespace StockTrackingMVC.Controllers
                 List<Claim> claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, modelLogin.UserName),
+					new Claim(ClaimTypes.Name, modelLogin.UserName),
 					new Claim(ClaimTypes.Role, user.UserType),
 					new Claim("OtherProperties", "Example Role")
                 };
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
                     CookieAuthenticationDefaults.AuthenticationScheme);
 
-                AuthenticationProperties properties = new AuthenticationProperties() {
-                    AllowRefresh = true,
-                    IsPersistent = modelLogin.KeepLoggedIn
-                };
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), properties);
-                return RedirectToAction("Index", "Home");
+				if (modelLogin.KeepLoggedIn)
+				{
+					await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), new AuthenticationProperties
+					{
+						IsPersistent = true,
+						ExpiresUtc = DateTime.UtcNow.AddMonths(1) // Beni hatırla için 1 ay hatırlama
+					});
+				}
+				else
+				{
+					await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+					// ExpiresUtc belirlenmediği için Cookie otomatik oluşturulacak
+					// Cookie siteden çıkılınca silinir
+				}
+
+				return RedirectToAction("Index", "Home");
             }
             ViewData["ValidateMessage"] = "Kullanıcı Bulunamadı";
             return View();

@@ -1,18 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using StockTrackingMVC.Data;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(option =>
-    {
-        option.LoginPath = "/Access/Login";
-        option.ExpireTimeSpan = TimeSpan.FromMinutes(1);
-    });
-builder.Services.AddDbContext<StockTrackingDBContext>(options => options.UseSqlServer(
+.AddCookie(option =>
+	{
+		option.LoginPath = "/Access/Login";
+        option.ExpireTimeSpan = TimeSpan.FromDays(30); // Beni hatýrla 30 gün geçerli
+		option.SlidingExpiration = true; // Cookie yenilenerek kullanýcý unutulur
+	});
+    builder.Services.AddDbContext<StockTrackingDBContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
