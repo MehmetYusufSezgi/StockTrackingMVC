@@ -12,9 +12,17 @@ namespace StockTrackingMVC.Controllers
         {
             _dbcontext = dbcontext;
         }
-        public IActionResult Index()
+        public IActionResult Index(string searchQuery)
         {
-            IEnumerable<Product> objProductList = _dbcontext.Products.Include(p => p.Category);
+			var GetProductsFromDatabase = _dbcontext.Products.Include(p => p.Category);
+			IEnumerable<Product> objProductList = GetProductsFromDatabase;
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                // Perform the filtering based on the search query, for example:
+                objProductList = objProductList.Where(p => p.ProductName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+            }
+
             return View(objProductList);
         }
         //GET

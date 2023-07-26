@@ -28,37 +28,37 @@ namespace StockTrackingMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(User modelLogin)
         {
-			User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == modelLogin.UserName);
+            User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == modelLogin.UserName);
 
-			if (user != null && user.UserPassword == modelLogin.UserPassword)
+            if (user != null && user.UserPassword == modelLogin.UserPassword)
             {
                 List<Claim> claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, modelLogin.UserName),
-					new Claim(ClaimTypes.Name, modelLogin.UserName),
-					new Claim(ClaimTypes.Role, user.UserType),
-					new Claim("OtherProperties", "Example Role")
+                    new Claim(ClaimTypes.Name, modelLogin.UserName),
+                    new Claim(ClaimTypes.Role, user.UserType),
+                    new Claim("OtherProperties", "Example Role")
                 };
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
-                    CookieAuthenticationDefaults.AuthenticationScheme);
 
-				if (modelLogin.KeepLoggedIn)
-				{
-					await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), new AuthenticationProperties
-					{
-						IsPersistent = true,
-						ExpiresUtc = DateTime.UtcNow.AddMonths(1) // Beni hatırla için 1 ay hatırlama
-					});
-				}
-				else
-				{
-					await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-					// ExpiresUtc belirlenmediği için Cookie otomatik oluşturulacak
-					// Cookie siteden çıkılınca silinir
-				}
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-				return RedirectToAction("Index", "Home");
+                var authenticationProperties = new AuthenticationProperties();
+
+                if (modelLogin.KeepLoggedIn)
+                {
+                    authenticationProperties.IsPersistent = true;
+                    authenticationProperties.ExpiresUtc = DateTime.UtcNow.AddMonths(1);
+                }
+                else
+                {
+                    authenticationProperties.IsPersistent = false;
+                }
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authenticationProperties);
+
+                return RedirectToAction("Index", "Home");
             }
+
             ViewData["ValidateMessage"] = "Kullanıcı Bulunamadı";
             return View();
         }
