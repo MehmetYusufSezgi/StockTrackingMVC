@@ -1,9 +1,9 @@
 ﻿@model User
 
-<form method="post">
+<form method="post" asp-action="Edit">
 	<div class="border p-3 mt-4">
 		<div class="row pb-2">
-			<h2 class="text-light">Kullanıcı Ekle</h2>
+			<h2 class="text-light">Kullanıcı Düzenle</h2>
 			<hr />
 		</div>
 		<div class="mb-3">
@@ -24,7 +24,7 @@
 					<div class="mb-3">
 						<label asp-for="UserType"></label>
 						<select asp-for="UserType" name="UserType" class="form-control">
-							<option disabled value="">Select a user type...</option>
+							<option disabled value="">Select a user...</option>
 							<option value="kullanici">kullanici</option>
 							<option value="admin">admin</option>
 						</select>
@@ -32,15 +32,15 @@
 				</div>
 			</div>
 		</div>
-		<button type="submit" class="btn btn-primary">Kullanıcı Kaydet</button>
+		<button type="submit" class="btn btn-primary">Kullanıcı Düzenle</button>
 		<a asp-controller="User" asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
 	</div>
-	<br />
-	<br />
+<br />
+<br />
 </form>
 
 @section Scripts
-	{
+{
 	@{
 		<partial name="_ValidationScriptsPartial" />
 	}
