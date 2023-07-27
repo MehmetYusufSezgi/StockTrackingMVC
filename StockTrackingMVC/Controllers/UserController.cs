@@ -4,18 +4,18 @@ using StockTrackingMVC.Models;
 
 namespace StockTrackingMVC.Controllers
 {
-    public class UserController : Controller
-    {
-        private readonly StockTrackingDBContext _dbcontext;
-        public UserController(StockTrackingDBContext dbcontext)
-        {
-            _dbcontext = dbcontext;
-        }
-        public IActionResult Index()
-        {
-            IEnumerable<User> objUserList = _dbcontext.Users;
-            return View(objUserList);
-        }
+	public class UserController : Controller
+	{
+		private readonly StockTrackingDBContext _dbcontext;
+		public UserController(StockTrackingDBContext dbcontext)
+		{
+			_dbcontext = dbcontext;
+		}
+		public IActionResult Index()
+		{
+			IEnumerable<User> objUserList = _dbcontext.Users;
+			return View(objUserList);
+		}
 
 		//GET
 		public IActionResult Add()
@@ -45,7 +45,6 @@ namespace StockTrackingMVC.Controllers
 					LogTime = DateTime.Now
 				};
 				_dbcontext.Logs.Add(logEntry);
-
 				_dbcontext.Users.Add(obj);
 				_dbcontext.SaveChanges();
 				TempData["success"] = "Kullanıcı başarıyla eklendi";

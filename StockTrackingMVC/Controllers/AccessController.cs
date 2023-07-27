@@ -11,47 +11,59 @@ namespace StockTrackingMVC.Controllers
 {
     public class AccessController : Controller
     {
-        private readonly StockTrackingDBContext _dbContext;
-        public AccessController(StockTrackingDBContext dBContext)
+        private readonly StockTrackingDBContext _dbcontext;
+
+        public AccessController(StockTrackingDBContext dbcontext)
         {
-            _dbContext = dBContext;
+            _dbcontext = dbcontext;
         }
+
         public IActionResult Login()
         {
-            ClaimsPrincipal claimUser = HttpContext.User;
-            if (claimUser.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            return View();
+            return View(new LoginViewModel());
         }
-        [HttpPost]
-        public async Task<IActionResult> Login(User modelLogin)
+
+        public User GetUserByCredentials(string username, string password)
         {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == modelLogin.UserName);
+            return _dbcontext.Users.SingleOrDefault(u => u.UserName == username && u.UserPassword == password);
+        }
 
-            if (user != null && user.UserPassword == modelLogin.UserPassword)
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+        {
+            if (ModelState.IsValid)
             {
-                List<Claim> claims = new List<Claim>()
+                User foundUser = GetUserByCredentials(loginViewModel.UserName, loginViewModel.UserPassword);
+
+                if (foundUser != null)
                 {
-                    new Claim(ClaimTypes.NameIdentifier, modelLogin.UserName),
-                    new Claim(ClaimTypes.Name, modelLogin.UserName),
-                    new Claim(ClaimTypes.Role, user.UserType),
-                    new Claim("OtherProperties", "Example Role")
-                };
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, foundUser.UserName),
+                    };
 
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    if (!string.IsNullOrEmpty(foundUser.UserType))
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, foundUser.UserType));
+                    }
 
-                var authenticationProperties = new AuthenticationProperties();
-                authenticationProperties.IsPersistent = modelLogin.KeepLoggedIn;
-                authenticationProperties.ExpiresUtc = DateTime.UtcNow.AddMonths(1);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authenticationProperties);
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return RedirectToAction("Index", "Home");
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(identity));
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                ViewData["ValidateMessage"] = "Invalid username or password.";
             }
+            return View(loginViewModel);
+        }
 
-            ViewData["ValidateMessage"] = "Kullanıcı Bulunamadı";
-            return View();
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
         }
     }
 }
