@@ -43,17 +43,8 @@ namespace StockTrackingMVC.Controllers
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 var authenticationProperties = new AuthenticationProperties();
-
-                if (modelLogin.KeepLoggedIn)
-                {
-                    authenticationProperties.IsPersistent = true;
-                    authenticationProperties.ExpiresUtc = DateTime.UtcNow.AddMonths(1);
-                }
-                else
-                {
-                    authenticationProperties.IsPersistent = false;
-                }
-
+                authenticationProperties.IsPersistent = modelLogin.KeepLoggedIn;
+                authenticationProperties.ExpiresUtc = DateTime.UtcNow.AddMonths(1);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authenticationProperties);
 
                 return RedirectToAction("Index", "Home");
