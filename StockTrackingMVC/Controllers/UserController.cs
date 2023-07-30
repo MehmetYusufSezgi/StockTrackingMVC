@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StockTrackingMVC.Data;
 using StockTrackingMVC.Models;
 
 namespace StockTrackingMVC.Controllers
 {
+	[Authorize]
 	public class UserController : Controller
 	{
 		private readonly StockTrackingDBContext _dbcontext;
@@ -31,10 +33,16 @@ namespace StockTrackingMVC.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				// Select aracı için kullanıcı tipi
-				string selectedUserType = Request.Form["UserType"];
+                bool userExists = _dbcontext.Users.Any(p => p.UserName == obj.UserName);
 
-				// Kullanıcı tipi atama
+                if (userExists)
+                {
+                    ModelState.AddModelError("UserName", "Bu kullanıcı zaten mevcut.");
+                    ViewBag.Users = _dbcontext.Users.ToList();
+                    return View(obj);
+                }
+                string selectedUserType = Request.Form["UserType"];
+
 				obj.UserType = selectedUserType;
 
 				var message = User.Identity.Name + " kullanıcı ekledi : " + obj.UserName + ", tür : " + obj.UserType;

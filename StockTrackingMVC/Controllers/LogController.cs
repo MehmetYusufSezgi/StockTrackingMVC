@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StockTrackingMVC.Data;
 using StockTrackingMVC.Models;
@@ -6,15 +7,16 @@ using System.Drawing.Printing;
 
 namespace StockTrackingMVC.Controllers
 {
+	[Authorize]
 	public class LogController : Controller
 	{
 		private readonly StockTrackingDBContext _dbcontext;
-        public LogController(StockTrackingDBContext dBContext)
-        {
-            _dbcontext = dBContext;
+		public LogController(StockTrackingDBContext dBContext)
+		{
+			_dbcontext = dBContext;
 		}
-        public IActionResult Index(int page=1, int pageSize=10)
-		{			
+		public IActionResult Index(int page = 1, int pageSize = 10)
+		{
 			// Get the total number of logs in the database
 			int totalLogs = _dbcontext.Logs.Count();
 

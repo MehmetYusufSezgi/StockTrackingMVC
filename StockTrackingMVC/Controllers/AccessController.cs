@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using StockTrackingMVC.Models;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StockTrackingMVC.Data;
-using Microsoft.EntityFrameworkCore;
+using StockTrackingMVC.Models;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace StockTrackingMVC.Controllers
 {
@@ -49,8 +50,30 @@ namespace StockTrackingMVC.Controllers
 
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
+                    AuthenticationProperties authProperties = null;
+
+                    if (loginViewModel.KeepLoggedIn)
+                    {
+                        authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
+                        };
+
+                        // Sign in the user with the specified authentication properties.
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+                    }
+                    else
+                    {
+                        authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = false
+                        };
+                        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    }
+
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(identity));
+                        new ClaimsPrincipal(identity), authProperties);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -59,10 +82,10 @@ namespace StockTrackingMVC.Controllers
             }
             return View(loginViewModel);
         }
-
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(LoginViewModel loginViewModel)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            loginViewModel.KeepLoggedIn = false;
             return RedirectToAction("Login");
         }
     }
