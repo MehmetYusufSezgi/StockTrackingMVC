@@ -2,14 +2,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using StockTrackingMVC.Data;
 using System.Security.Claims;
+using Microsoft.Extensions.Options;
+using StockTrackingMVC;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<CustomCookieAuthenticationEvents>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(option =>
     {
-        option.LoginPath = "/Access/Login";
+        option.EventsType = typeof(CustomCookieAuthenticationEvents);
         option.SlidingExpiration = true; // Renew the cookie on each request
         option.ExpireTimeSpan = TimeSpan.FromDays(30); // Remember me for 30 days
     });
@@ -39,7 +42,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Access}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
 app.Run();

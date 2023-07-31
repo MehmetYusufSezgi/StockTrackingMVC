@@ -59,21 +59,17 @@ namespace StockTrackingMVC.Controllers
                             IsPersistent = true,
                             ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
                         };
-
-                        // Sign in the user with the specified authentication properties.
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
                     }
                     else
                     {
                         authProperties = new AuthenticationProperties
                         {
-                            IsPersistent = false
+                            IsPersistent = false,
+                            ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(30) // Set a shorter expiration time for non-persistent login.
                         };
-                        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     }
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(identity), authProperties);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -82,10 +78,10 @@ namespace StockTrackingMVC.Controllers
             }
             return View(loginViewModel);
         }
-        public async Task<IActionResult> Logout(LoginViewModel loginViewModel)
+
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            loginViewModel.KeepLoggedIn = false;
             return RedirectToAction("Login");
         }
     }
