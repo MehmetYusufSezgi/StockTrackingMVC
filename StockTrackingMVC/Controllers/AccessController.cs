@@ -64,7 +64,7 @@ namespace StockTrackingMVC.Controllers
 					{
 						authProperties = new AuthenticationProperties
 						{
-							IsPersistent = false,
+							IsPersistent = true,
 							ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(30)
 						};
 					}
