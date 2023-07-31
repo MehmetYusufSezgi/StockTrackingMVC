@@ -33,14 +33,15 @@ namespace StockTrackingMVC.Controllers
 			int skipCount = (page - 1) * pageSize;
 
 			var products = objProductList
+				.OrderByDescending(product => product.ProductName)
 				.Skip(skipCount)
 				.Take(pageSize)
 				.ToList();
 
-			ViewBag.Logs = products;
+			ViewBag.Products = products;
 			ViewBag.CurrentPage = page;
 			ViewBag.TotalPages = totalPages;
-			return View(objProductList);
+			return View();
 		}
 		//GET
 		[Authorize]

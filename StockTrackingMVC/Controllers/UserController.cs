@@ -31,6 +31,7 @@ namespace StockTrackingMVC.Controllers
 			int skipCount = (page - 1) * pageSize;
 
 			var users = objUserList
+				.OrderByDescending(user => user.UserName)
 				.Skip(skipCount)
 				.Take(pageSize)
 				.ToList();
