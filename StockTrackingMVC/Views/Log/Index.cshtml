@@ -37,6 +37,14 @@
         </ul>
     </nav>
 </div>
+<div class="container">
+    <form method="get" action="@Url.Action("Index", "Log")">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="searchQuery" placeholder="Kullanıcı Kaydı Ara">
+            <button class="btn btn-outline-secondary" type="submit">Ara</button>
+        </div>
+    </form>
+</div>
 <table class="table table-bordered table-striped" style="width:100%">
     <thead>
         <tr>

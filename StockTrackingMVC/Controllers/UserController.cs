@@ -13,9 +13,14 @@ namespace StockTrackingMVC.Controllers
 		{
 			_dbcontext = dbcontext;
 		}
-		public IActionResult Index()
+		public IActionResult Index(string searchQuery)
 		{
 			IEnumerable<User> objUserList = _dbcontext.Users;
+			if (!string.IsNullOrEmpty(searchQuery))
+			{
+				// Perform the filtering based on the search query, for example:
+				objUserList = objUserList.Where(p => p.UserName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+			}
 			return View(objUserList);
 		}
 
@@ -33,15 +38,15 @@ namespace StockTrackingMVC.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-                bool userExists = _dbcontext.Users.Any(p => p.UserName == obj.UserName);
+				bool userExists = _dbcontext.Users.Any(p => p.UserName == obj.UserName);
 
-                if (userExists)
-                {
-                    ModelState.AddModelError("UserName", "Bu kullanıcı zaten mevcut.");
-                    ViewBag.Users = _dbcontext.Users.ToList();
-                    return View(obj);
-                }
-                string selectedUserType = Request.Form["UserType"];
+				if (userExists)
+				{
+					ModelState.AddModelError("UserName", "Bu kullanıcı zaten mevcut.");
+					ViewBag.Users = _dbcontext.Users.ToList();
+					return View(obj);
+				}
+				string selectedUserType = Request.Form["UserType"];
 
 				obj.UserType = selectedUserType;
 
