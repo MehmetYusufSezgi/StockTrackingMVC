@@ -25,8 +25,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-controller="Product" asp-action="Index"><i class="bi bi-box-seam"></i> Ürün İşlemleri</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" id="productDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-box-seam"></i> Ürün İşlemleri
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="productDropdown">
+                                <li><a class="dropdown-item text-dark" asp-controller="Product" asp-action="Index">Ürünleri İncele</a></li>
+                                <li><a class="dropdown-item text-dark" asp-controller="Product" asp-action="Add">Ürün Ekle</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-controller="Home" asp-action="LogOut"><i class="bi bi-door-open"></i> Çıkış Yap</a>

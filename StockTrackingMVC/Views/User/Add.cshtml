@@ -20,10 +20,10 @@
 						<span asp-validation-for="UserPassword" class="text-danger"></span>
 					</div>
 				</div>
-				<div class="col-6">
+				<div class="form-group col-6">
 					<div class="mb-3">
 						<label asp-for="UserType"></label>
-						<select asp-for="UserType" name="UserType" class="form-control">
+						<select asp-for="UserType" class="form-select">
 							<option disabled value="">Select a user type...</option>
 							<option value="kullanici">kullanici</option>
 							<option value="admin">admin</option>
