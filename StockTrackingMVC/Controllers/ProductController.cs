@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StockTrackingMVC.Data;
 using StockTrackingMVC.Models;
+using System.Drawing.Printing;
 
 namespace StockTrackingMVC.Controllers
 {
@@ -14,7 +15,7 @@ namespace StockTrackingMVC.Controllers
 		{
 			_dbcontext = dbcontext;
 		}
-		public IActionResult Index(string searchQuery)
+		public IActionResult Index(string searchQuery, int page = 1, int pageSize = 10)
 		{
 			var GetProductsFromDatabase = _dbcontext.Products.Include(p => p.Category);
 			IEnumerable<Product> objProductList = GetProductsFromDatabase;
@@ -23,7 +24,22 @@ namespace StockTrackingMVC.Controllers
 			{
 				objProductList = objProductList.Where(p => p.ProductName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
 			}
+			int totalLogs = objProductList.Count();
 
+			int totalPages = (int)Math.Ceiling((double)totalLogs / pageSize);
+
+			page = Math.Max(1, Math.Min(page, totalPages));
+
+			int skipCount = (page - 1) * pageSize;
+
+			var products = objProductList
+				.Skip(skipCount)
+				.Take(pageSize)
+				.ToList();
+
+			ViewBag.Logs = products;
+			ViewBag.CurrentPage = page;
+			ViewBag.TotalPages = totalPages;
 			return View(objProductList);
 		}
 		//GET

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StockTrackingMVC.Data;
 using StockTrackingMVC.Models;
+using System.Drawing.Printing;
 
 namespace StockTrackingMVC.Controllers
 {
@@ -13,14 +14,31 @@ namespace StockTrackingMVC.Controllers
 		{
 			_dbcontext = dbcontext;
 		}
-		public IActionResult Index(string searchQuery)
+		public IActionResult Index(string searchQuery, int page = 1, int pageSize = 10)
 		{
 			IEnumerable<User> objUserList = _dbcontext.Users;
 			if (!string.IsNullOrEmpty(searchQuery))
 			{
-				// Perform the filtering based on the search query, for example:
 				objUserList = objUserList.Where(p => p.UserName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
 			}
+
+			int totalLogs = objUserList.Count();
+
+			int totalPages = (int)Math.Ceiling((double)totalLogs / pageSize);
+
+			page = Math.Max(1, Math.Min(page, totalPages));
+
+			int skipCount = (page - 1) * pageSize;
+
+			var users = objUserList
+				.Skip(skipCount)
+				.Take(pageSize)
+				.ToList();
+
+			// Pass the logs and pagination information to the view
+			ViewBag.Logs = users;
+			ViewBag.CurrentPage = page;
+			ViewBag.TotalPages = totalPages;
 			return View(objUserList);
 		}
 

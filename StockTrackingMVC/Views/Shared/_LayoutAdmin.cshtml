@@ -38,6 +38,11 @@
                             <a class="nav-link text-light" asp-controller="Home" asp-action="LogOut">Çıkış Yap</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <span class="nav-link text-light">Kullanıcı : @User.Identity.Name</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>

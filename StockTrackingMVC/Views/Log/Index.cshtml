@@ -17,7 +17,7 @@
             @if (ViewBag.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="/Log/Index?page=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize">Previous</a>
+                    <a class="page-link" href="/Log/Index?page=@(ViewBag.CurrentPage - 1)&pageSize=@ViewBag.PageSize">Önceki</a>
                 </li>
             }
 
@@ -31,7 +31,7 @@
             @if (ViewBag.CurrentPage < ViewBag.TotalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" href="/Log/Index?page=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize">Next</a>
+                    <a class="page-link" href="/Log/Index?page=@(ViewBag.CurrentPage + 1)&pageSize=@ViewBag.PageSize">Sonraki</a>
                 </li>
             }
         </ul>
